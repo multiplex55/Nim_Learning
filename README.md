@@ -32,6 +32,49 @@ compiler behavior in a single place.
 > **Note:** If `nimble` is not available in your environment, you can execute the
 > same commands by running `nim` with the options printed at the start of each task.
 
+## Windows GUI Demo (wNim)
+
+The project ships with an interactive GUI example located at
+`src/gui/wnim_demo.nim`. It uses the [wNim](https://github.com/khchen/wNim)
+framework, which only supports Windows. A `requires "wNim >= 1.0.0"` entry is
+present in `NimLearning.nimble` so that Nimble fetches the dependency when
+available.
+
+### Prerequisites
+
+1. A Windows environment (Windows 10 or newer is recommended) with Nim 1.6+ and
+   the `nimble` tool on your `PATH`.
+2. The wNim package. Install it with `nimble install wNim` on Windows. If Nimble
+   cannot download the repository automatically, follow the manual steps
+   described by the project:
+   - Download the wNim archive from GitHub.
+   - Extract it and open a command prompt inside the folder containing
+     `wnim.nimble`.
+   - Run `nimble install` to register the package locally.
+
+### Running the demo
+
+- Preferred: `nimble runGui` — compiles and runs the sample with the correct
+  `--app:gui` flag and prints a helpful message when invoked on non-Windows
+  systems.
+- Manual alternative: `nim c -r --app:gui src/gui/wnim_demo.nim` (add
+  `--cc:vcc` or `--cpu:x86` if you need to target a specific compiler/CPU).
+
+### What you will see
+
+Running the task opens a window titled **“Nim Learning wNim Demo”** that
+showcases:
+
+- Buttons that count how many times they were pressed.
+- A text box with live mirroring of your input into a nearby label.
+- A checkbox toggling whether the button message is verbose.
+- A combo box that logs the selected topic.
+- An activity log (`ListBox`) that captures every interaction.
+- A status bar and menu bar (`File → Exit`, `View → Clear Activity Log`).
+
+Interacting with any control updates both the log and the status bar, making it
+easy to trace which widget fired its event.
+
 ## Configuration Variables
 
 At the top of `NimLearning.nimble` you will find reusable sequences that

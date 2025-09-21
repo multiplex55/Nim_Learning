@@ -72,6 +72,7 @@ srcDir        = "src"
 # Dependencies
 
 requires "nim >= 1.6.0"
+requires "wNim >= 1.0.0"
 
 # Tasks
 
@@ -117,4 +118,12 @@ task runExample, "Run a single example module. Provide the name (with or without
     quit "Could not find example '" & target & "'. Available modules: " & exampleModules.join(", ")
   let opts = debugOptions & defaultBackend & runStep
   runNimCommand(opts, module)
+
+task runGui, "Compile and launch the Windows-only wNim GUI demo":
+  when defined(windows):
+    let module = "src/gui/wnim_demo.nim"
+    let opts = debugOptions & defaultBackend & runStep & @["--app:gui"]
+    runNimCommand(opts, module)
+  else:
+    quit "The wNim GUI demo can only be built on Windows where wNim is supported."
 
