@@ -2,6 +2,57 @@
 # Nimble package definition for the Nim Learning educational project.
 import std/[os, strutils]
 
+proc findWnimMacrosPath(): string =
+  ## Locate the installed wNim wMacros module.
+  const relativePath = joinPath("wNim", "private", "wMacros.nim")
+
+  proc addCandidate(result: var seq[string], dirPath: string) =
+    if dirPath.len > 0 and dirExists(dirPath):
+      result.add(dirPath)
+
+  var searchRoots: seq[string] = @[]
+  let nimbleDir = getEnv("NIMBLE_DIR")
+  if nimbleDir.len > 0:
+    addCandidate(searchRoots, nimbleDir / "pkgs2")
+    addCandidate(searchRoots, nimbleDir / "pkgs")
+  let homeNimble = getHomeDir() / ".nimble"
+  addCandidate(searchRoots, homeNimble / "pkgs2")
+  addCandidate(searchRoots, homeNimble / "pkgs")
+
+  for root in searchRoots:
+    for kind, path in walkDir(root):
+      if kind == pcDir:
+        let folder = extractFilename(path).toLowerAscii
+        if folder.startsWith("wnim"):
+          let candidate = path / relativePath
+          if fileExists(candidate):
+            return candidate
+
+proc ensureWnimRootRefCompatibility() =
+  ## Patch wNim to define RootRef on Nim 2.x installations where it was removed.
+  let macrosPath = findWnimMacrosPath()
+  if macrosPath.len == 0:
+    echo "Warning: Unable to locate wNim's wMacros.nim for compatibility patch."
+    return
+
+  var content = readFile(macrosPath)
+  if content.contains("RootRef* = RootObj") or content.contains("RootRef = RootObj"):
+    return
+
+  let marker = "import macros, strutils, strformat, tables, sets, hashes, winimx"
+  let insertPos = content.find(marker)
+  if insertPos < 0:
+    echo "Warning: Unexpected wMacros.nim layout. Skipping RootRef compatibility patch."
+    return
+
+  let insertion = "\n\nwhen not declared(RootRef):\n  type RootRef* = RootObj\n"
+  if content.find(insertion.strip) >= 0:
+    return
+
+  content.insert(insertion, insertPos + marker.len)
+  writeFile(macrosPath, content)
+  echo "Applied wNim RootRef compatibility patch at " & macrosPath
+
 let baseOptions       = @["--hint[Processing]:off", "--hint[Conf]:off"]
 let debugOptions      = baseOptions & @["-g", "--lineDir:on", "--stackTrace:on"]
 let releaseOptions    = baseOptions & @["-d:release", "--opt:speed", "--stackTrace:off"]
@@ -121,6 +172,7 @@ task runExample, "Run a single example module. Provide the name (with or without
 
 task runGui, "Compile and launch the Windows-only wNim GUI demo":
   when defined(windows):
+    ensureWnimRootRefCompatibility()
     let module = "src/gui/wnim_demo.nim"
     let opts = debugOptions & defaultBackend & runStep & @["--app:gui"]
     runNimCommand(opts, module)
