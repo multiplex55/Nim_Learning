@@ -41,7 +41,7 @@ when defined(windows):
     let viewMenu = Menu(menuBar, "&View")
     discard viewMenu.append(idClearLog, "&Clear Activity Log\tCtrl+L")
 
-    # Container panel used by the autolayout DSL to place the widgets.
+    # Container panel used by the manual layout helper to place the widgets.
     let panel = Panel(frame)
 
     # Labels introduce the sample and provide running feedback.
@@ -76,6 +76,52 @@ when defined(windows):
     activityLog.minSize = (200, 220)
 
     var clickCount = 0
+
+    proc layoutWidgets() =
+      ## Position every control using manual coordinates.
+      ##
+      ## The project previously relied on `panel.autolayout`, but the upstream
+      ## `wResizer` helper currently fails to compile on Nim 2.2 due to the
+      ## `HashSet[None]` instantiation error.  Switching to a simple, explicit
+      ## layout keeps the demo functional until wNim gains official support for
+      ## the newer compiler release.
+      const margin = 12
+      const spacing = 8
+
+      let client = panel.getClientSize()
+      var contentWidth = client.width - margin * 2
+      if contentWidth <= 0:
+        contentWidth = frame.getSize().width - margin * 2
+      if contentWidth < 0:
+        contentWidth = 0
+
+      var cursorY = margin
+
+      template place(widget: untyped, height: int, width = contentWidth) =
+        widget.move(margin, cursorY)
+        widget.setSize(width, height)
+        cursorY += height + spacing
+
+      place(heading, 32)
+      place(description, 40)
+      place(infoLabel, 26)
+      place(actionButton, 32)
+      place(resetButton, 32)
+      place(inputLabel, 26)
+      place(inputField, 30)
+      place(nameLabel, 26)
+      place(agreeCheck, 26)
+      place(choiceLabel, 26)
+      place(combo, 30)
+      place(statusMirror, 26)
+      place(listCaption, 24)
+
+      var remaining = client.height - cursorY - margin
+      let logMinHeight = activityLog.minSize.height
+      if remaining < logMinHeight:
+        remaining = logMinHeight
+      activityLog.move(margin, cursorY)
+      activityLog.setSize(contentWidth, remaining)
 
     proc logActivity(message: string) =
       ## Append an entry to the list box and update the status areas.
@@ -144,27 +190,14 @@ when defined(windows):
       else:
         discard
 
-    panel.autolayout """
-      spacing: 8
-      V:|-12-[heading]-[description]-[infoLabel]-[actionButton]-[resetButton]-[inputLabel]-[inputField]-[nameLabel]-[agreeCheck]-[choiceLabel]-[combo]-[statusMirror]-[listCaption]-[activityLog]-12-|
-      H:|-12-[heading]-12-|
-      H:|-12-[description]-12-|
-      H:|-12-[infoLabel]-12-|
-      H:|-12-[actionButton]-12-|
-      H:|-12-[resetButton]-12-|
-      H:|-12-[inputLabel]-12-|
-      H:|-12-[inputField]-12-|
-      H:|-12-[nameLabel]-12-|
-      H:|-12-[agreeCheck]-12-|
-      H:|-12-[choiceLabel]-12-|
-      H:|-12-[combo]-12-|
-      H:|-12-[statusMirror]-12-|
-      H:|-12-[listCaption]-12-|
-      H:|-12-[activityLog]-12-|
-    """
+    panel.wEvent_Size do ():
+      layoutWidgets()
+
+    layoutWidgets()
 
     frame.center()
     frame.show()
+    layoutWidgets()
     app.mainLoop()
 
 else:
