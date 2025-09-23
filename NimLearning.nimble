@@ -72,7 +72,6 @@ srcDir        = "src"
 # Dependencies
 
 requires "nim >= 1.6.0"
-requires "nimx >= 0.2"
 
 # Tasks
 
@@ -117,10 +116,5 @@ task runExample, "Run a single example module. Provide the name (with or without
   if module.len == 0:
     quit "Could not find example '" & target & "'. Available modules: " & exampleModules.join(", ")
   let opts = debugOptions & defaultBackend & runStep
-  runNimCommand(opts, module)
-
-task runGui, "Compile and launch the cross-platform nimx GUI demo":
-  let module = "src/gui/nimx_demo.nim"
-  let opts = debugOptions & defaultBackend & runStep & @["--threads:on"]
   runNimCommand(opts, module)
 
