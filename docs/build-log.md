@@ -39,17 +39,6 @@ command line(1, 2) Error: invalid command line option: '--cpp'
 
 > **Note:** Nim 1.6 recognises `nim cpp` or `--backend:cpp`. The task is preserved as-is so that the repository reflects the canonical command emitted by the Nimble script.
 
-## `nimble runGui`
-
-```
-Executing: nim --hint[Processing]:off --hint[Conf]:off -g --lineDir:on --stackTrace:on --cc:gcc r --threads:on src/gui/nimx_demo.nim
-Hint: gc: refc; threads: on; opt: none (DEBUG BUILD, `-d:release` generates faster code)
-could not load: libSDL2(|-2.0).so(|.0)
-Error: execution of an external program failed: '/root/.cache/nim/nimx_demo_d/nimx_demo_222629AAB6B329180B0DC5307449C8FE3CFE1C59 '
-```
-
-> **Note:** nimx compiles successfully, but the runtime needs the SDL2 shared library present on the host system before the demo can launch.
-
 ## `nimble runExample basic_control_flow`
 
 ```
