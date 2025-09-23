@@ -59,35 +59,32 @@ Use `nimble runExample <name>` (or `nim r examples/<name>.nim`) to explore the f
 
 Each module is documented inline and is cross-referenced in the [feature notes](docs/nim-feature-notes.md) with explanations about why the showcased patterns are useful.
 
-## Windows GUI Demo (wNim)
+## Cross-Platform GUI Demo (nimx)
 
-The project ships with an interactive GUI example located at [`src/gui/wnim_demo.nim`](src/gui/wnim_demo.nim). It uses the [wNim](https://github.com/khchen/wNim) framework, which currently targets Windows.
+The project ships with an interactive GUI example located at [`src/gui/nimx_demo.nim`](src/gui/nimx_demo.nim). It uses the [nimx](https://github.com/yglukhov/nimx) framework so the same code runs on Windows, macOS, and Linux.
 
 ### Prerequisites
 
-1. Windows 10 or later with Nim 1.6+ and `nimble` on your `PATH`.
-2. The wNim package (`nimble install wNim`). If Nimble cannot download the repository automatically:
-   - Download the wNim archive from GitHub.
-   - Extract it and open a command prompt inside the folder containing `wnim.nimble`.
-   - Run `nimble install` to register the package locally.
+1. Nim 1.6+ with `nimble` available on your `PATH`.
+2. The nimx package (`nimble install nimx`). Follow the [nimx documentation](https://github.com/yglukhov/nimx#prerequisites) for any platform-specific runtime libraries such as SDL2.
 
 ### Running the demo
 
-- Preferred: `nimble runGui` — compiles and runs the sample with the correct `--app:gui` flag. On non-Windows systems the task exits with a descriptive message instead of attempting to build the binary.
-- Manual alternative: `nim c -r --app:gui src/gui/wnim_demo.nim` (use `--cc:vcc` or `--cpu:x86` to target a specific compiler/CPU).
+- Preferred: `nimble runGui` — compiles and runs the sample with the correct `--app:gui` flag on every supported desktop platform.
+- Manual alternative: `nim c -r --app:gui src/gui/nimx_demo.nim` (add any `--cc:` or `--cpu:` switches you normally use).
 
 ### What you will see
 
-Running the task opens a window titled **“Nim Learning wNim Demo”** that showcases:
+Running the task opens a window titled **“Nim Learning nimx Demo”** that showcases:
 
 - Buttons that count how many times they were pressed.
 - A text box with live mirroring of your input into a nearby label.
 - A checkbox toggling whether the button message is verbose.
 - A combo box that logs the selected topic.
-- An activity log (`ListBox`) that captures every interaction.
-- A status bar and menu bar (`File → Exit`, `View → Clear Activity Log`).
+- An activity log backed by a `TableView` that captures every interaction.
+- A status readout mirrored both in-window and in the title bar.
 
-Interacting with any control updates both the log and the status bar, making it easy to trace which widget fired its event.
+Interacting with any control updates both the log and the status readout so you always know which widget fired its event.
 
 ## Additional Notes
 
