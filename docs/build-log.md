@@ -42,11 +42,13 @@ command line(1, 2) Error: invalid command line option: '--cpp'
 ## `nimble runGui`
 
 ```
-The wNim GUI demo can only be built on Windows where wNim is supported.
-Error: Exception raised during nimble script execution
+Executing: nim --hint[Processing]:off --hint[Conf]:off -g --lineDir:on --stackTrace:on --cc:gcc r --threads:on src/gui/nimx_demo.nim
+Hint: gc: refc; threads: on; opt: none (DEBUG BUILD, `-d:release` generates faster code)
+could not load: libSDL2(|-2.0).so(|.0)
+Error: execution of an external program failed: '/root/.cache/nim/nimx_demo_d/nimx_demo_222629AAB6B329180B0DC5307449C8FE3CFE1C59 '
 ```
 
-> **Note:** The message is expected on non-Windows systems; the task exits before attempting a build.
+> **Note:** nimx compiles successfully, but the runtime needs the SDL2 shared library present on the host system before the demo can launch.
 
 ## `nimble runExample basic_control_flow`
 

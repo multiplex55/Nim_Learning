@@ -10,7 +10,7 @@
 ## imported from other modules. Use the `when isMainModule` block at the
 ## bottom to run the demo directly.
 
-import std/[strformat, strutils]
+import std/[intsets, strformat, strutils]
 import nimx/[window, layout, button, text_field, popup_button,
              scroll_view, table_view, table_view_cell]
 
@@ -173,7 +173,7 @@ proc launchDemo*() =
 
     logTable.onSelectionChange = proc () {.closure, gcsafe.} =
       var selectedIndex = -1
-      for idx in logTable.selectedRows:
+      for idx in logTable.selectedRows.items:
         selectedIndex = idx
         break
       if selectedIndex >= 0:

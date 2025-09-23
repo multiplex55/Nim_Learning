@@ -7,7 +7,7 @@ Nim Learning is an educational sandbox for exploring the Nim programming languag
 - **Guided source code** – Start from the minimal entry point in [`src/nim_learning.nim`](src/nim_learning.nim) and branch into progressively richer examples under [`examples/`](examples). Each snippet highlights a different language feature while remaining small enough to understand in one sitting.
 - **Curated build tasks** – Custom Nimble tasks wrap commonly used compiler configurations so you can focus on learning rather than memorising flag combinations.
 - **Cross-language experiments** – Selected modules demonstrate how Nim interfaces with C and C++, as well as how its metaprogramming facilities reduce boilerplate.
-- **Windows GUI demo** – A wNim-based sample shows how Nim applications can present native user interfaces.
+- **Cross-platform GUI demo** – A nimx-based sample highlights how Nim code can drive modern interfaces on Windows, macOS, and Linux.
 
 For a deeper explanation of the showcased concepts and direct references to the relevant procedures, see the [Nim feature notes](docs/nim-feature-notes.md).
 
@@ -27,7 +27,7 @@ Nim_Learning/
 
 - Nim 1.6 or newer with `nimble` available on your `PATH`.
 - A C toolchain (GCC or Clang) for compiling native binaries.
-- Optional: a Windows environment with the [wNim](https://github.com/khchen/wNim) package installed when experimenting with the GUI demo.
+- Optional: the [nimx](https://github.com/yglukhov/nimx) runtime prerequisites (for example SDL2 libraries) required by your platform when exploring the GUI demo.
 
 ## Building and Running
 
@@ -40,7 +40,7 @@ Nimble drives every build from [`NimLearning.nimble`](NimLearning.nimble). The c
 | C backend | `nimble buildC` | Rebuilds the main module with the GCC-backed C toolchain. |
 | C++ backend | `nimble buildCpp` | Switches to the Clang-based C++ backend to mirror `nim cpp`. |
 | Example runner | `nimble runExample <module>` | Compiles and executes one of the examples listed below. |
-| GUI sample | `nimble runGui` | Compiles and launches the wNim demo (Windows only). |
+| GUI sample | `nimble runGui` | Compiles and launches the nimx demo (desktop platforms with nimx prerequisites installed). |
 
 > **Tip:** each task prints the exact `nim` command before compiling. Copy the output to experiment with additional flags such as `--cpu:arm64` or `--threads:on`.
 
@@ -70,8 +70,8 @@ The project ships with an interactive GUI example located at [`src/gui/nimx_demo
 
 ### Running the demo
 
-- Preferred: `nimble runGui` — compiles and runs the sample with the correct `--app:gui` flag on every supported desktop platform.
-- Manual alternative: `nim c -r --app:gui src/gui/nimx_demo.nim` (add any `--cc:` or `--cpu:` switches you normally use).
+- Preferred: `nimble runGui` — compiles and runs the sample with the required `--threads:on` flag recommended by nimx.
+- Manual alternative: `nim c -r --threads:on src/gui/nimx_demo.nim` (add any `--cc:` or `--cpu:` switches you normally use).
 
 ### What you will see
 
