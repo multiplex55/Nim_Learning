@@ -32,4 +32,9 @@ This guide connects each learning module to the Nim language constructs it demon
 - `cStringLength` and `cPrintLine` use the `{.importc.}` pragma to bind directly to C standard-library functions for measuring string length and printing lines, respectively.【F:examples/interop_c_and_cpp.nim†L8-L25】
 - When compiled with the C++ backend, `cppAddOne` activates via `{.importcpp.}` to call an inline helper defined in `examples/cpp_helpers.hpp`, demonstrating conditional compilation with the `when defined(cpp)` guard.【F:examples/interop_c_and_cpp.nim†L27-L41】
 
+## GUI demo (`src/gui/nimx_demo.nim`)
+
+- `launchDemo` wraps `runApplication` to construct a cross-platform window with a nimx declarative layout that instantiates labels, buttons, text fields, checkboxes, pop-up menus, and a table-backed activity log.【F:src/gui/nimx_demo.nim†L17-L143】
+- Each widget wires into closures that mutate shared state, refresh status labels, and append to the log so interactions immediately update the interface.【F:src/gui/nimx_demo.nim†L149-L220】
+
 Refer back to the example modules after reading each section and tinker with the code to reinforce the concepts.
